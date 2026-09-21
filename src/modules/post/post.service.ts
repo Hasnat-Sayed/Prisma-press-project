@@ -260,7 +260,7 @@ const getAllPost = async (query: IPostQuery) => {
     },
 
     include: {
-      author: {
+      author: { 
         omit: {
           password: true,
         },
