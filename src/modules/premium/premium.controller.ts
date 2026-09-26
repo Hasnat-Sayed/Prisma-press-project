@@ -1,14 +1,25 @@
-import { prisma } from "../../lib/prisma";
+import { NextFunction, Request, Response } from "express";
+import httpStatus from "http-status";
+import { catchAsync } from "../../utils/catchAsync";
+import { premiumServices } from "./premium.service";
+import { sendResponse } from "../../utils/sendResposne";
 
-const getPremiumContent = async () => {
-  const posts = await prisma.post.findMany({
-    where: {
-      isPremium: true,
-    },
-  });
-  return posts;
-};
+const getPremiumContent = catchAsync(
+    async (req : Request, res : Response, next : NextFunction)=> {
+        const query = req.query;
+        const result = await premiumServices.getPremiumContent(query)
+        
+        sendResponse(res, {
+            success:true,
+            statusCode : httpStatus.OK,
+            message : "Premium Content Retrived Successfully",
+            data : result.data,
+            meta : result.meta
+        })
+    }
+)
 
-export const premiumServices = {
-  getPremiumContent,
-};
+
+export const premiumController = {
+    getPremiumContent
+}
